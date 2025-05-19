@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",                    // Target output JavaScript versi ES2022
+    "lib": ["ES2023"],                     // Library standar yang digunakan adalah ES2023 (terbaru)
+    "module": "ESNext",                    // Modul output menggunakan format ESNext (ES Modules)
+    "skipLibCheck": true,                  // Abaikan pengecekan type di file deklarasi (.d.ts) library eksternal
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",        // Resolusi modul dioptimalkan untuk bundler modern (Vite, webpack, dll)
+    "allowImportingTsExtensions": true,   // Mengizinkan import file TypeScript dengan ekstensi (.ts/.tsx) secara eksplisit
+    "isolatedModules": true,               // Kompilasi modul secara terpisah (penting untuk bundler yang pakai transpiler seperti esbuild)
+    "moduleDetection": "force",            // Paksa compiler deteksi modul meskipun tidak ada ekspor impor eksplisit
+    "noEmit": true,                        // Tidak menghasilkan output file JavaScript (hanya untuk pengecekan tipe)
+
+    /* Linting */
+    "strict": true,                        // Aktifkan mode ketat TypeScript (strict type checking)
+    "noUnusedLocals": true,                // Error jika ada variabel lokal yang tidak digunakan
+    "noUnusedParameters": true,            // Error jika ada parameter fungsi yang tidak digunakan
+    "noFallthroughCasesInSwitch": true    // Error jika ada kasus switch yang jatuh ke kasus lain tanpa break/return
+  },
+  "include": ["vite.config.ts"]            // Hanya file vite.config.ts yang akan dikompilasi (atau dicek)
+}

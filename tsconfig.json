@@ -1,0 +1,7 @@
+{
+  "files": [],                   // Tidak ada file langsung di-compile dari sini
+  "references": [                // Daftar konfigurasi tsconfig lain yang dirujuk (direferensikan)
+    { "path": "./tsconfig.app.json" },   // Referensi ke konfigurasi utama aplikasi frontend (React, dsb)
+    { "path": "./tsconfig.node.json" }   // Referensi ke konfigurasi untuk kode Node.js (misal backend atau script)
+  ]
+}

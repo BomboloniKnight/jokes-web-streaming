@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",                    // Output JavaScript sesuai standar ECMAScript 2020
+    "useDefineForClassFields": true,      // Gunakan cara modern mendefinisikan class fields (seperti `define`), lebih sesuai standar
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],  // Library yang disertakan saat kompilasi: fitur ES2020, objek DOM, dan iterable DOM
+    "module": "ESNext",                   // Format modul output menggunakan ES modules terbaru (import/export)
+    "skipLibCheck": true,                 // Lewatkan pengecekan tipe file library (node_modules), supaya lebih cepat kompilasi
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",        // Resolusi modul menyesuaikan bundler modern (Vite, esbuild, dll)
+    "allowImportingTsExtensions": true,   // Izinkan import file TypeScript dengan ekstensi .ts/.tsx secara eksplisit
+    "isolatedModules": true,               // Pastikan setiap file TypeScript bisa dikompilasi secara terpisah (penting untuk bundler)
+    "moduleDetection": "force",            // Paksa deteksi modul di semua file (bukan berdasarkan isi saja)
+    "noEmit": true,                        // Jangan keluarkan hasil kompilasi JS (biasanya untuk proyek yang hanya linting/typing)
+    "jsx": "react-jsx",                    // Gunakan transformasi JSX React versi baru (dari React 17+), tanpa import React otomatis
+
+    /* Linting */
+    "strict": true,                        // Aktifkan mode strict (strict null checks, noImplicitAny, dll)
+    "noUnusedLocals": true,                // Beri error jika ada variabel lokal yang tidak digunakan
+    "noUnusedParameters": true,            // Beri error jika ada parameter fungsi yang tidak digunakan
+    "noFallthroughCasesInSwitch": true    // Cegah kasus switch yang jatuh ke case berikutnya tanpa break
+  },
+  "include": ["src"]                       // Kompilasi hanya di folder src
+}
