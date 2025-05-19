@@ -2,7 +2,7 @@ import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 
 // Replace these with your Spotify application credentials
 const CLIENT_ID = 'YOUR_CLIENT_ID';
-const REDIRECT_URI = 'http://localhost:5173/callback';
+const REDIRECT_URI = 'https://localhost:5173/callback';
 const SCOPES = [
   'user-read-private',
   'user-read-email',
