@@ -8,30 +8,59 @@ import Home from './pages/Home';
 import Albums from './pages/Albums';
 import Playlists from './pages/Playlists';
 import PlaylistDetail from './pages/PlaylistDetail';
-import Login from './pages/admin/Login';
+import Login from './pages/Login';
+import Callback from './pages/Callback';
 import Dashboard from './pages/admin/Dashboard';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { PlayerProvider } from './context/PlayerContext';
 
 const AppRoutes = () => {
-  // Ambil user dari context auth untuk cek status login & admin
-  const { user } = useAuth();
+  const { isAuthenticated } = useAuth();
   
-  // Komponen proteksi route: hanya bisa diakses jika user admin
+  // Protect routes that require authentication
   const RequireAuth = ({ children }: { children: JSX.Element }) => {
-    return user?.isAdmin ? children : <Navigate to="/admin/login" />;
+    return isAuthenticated ? children : <Navigate to="/login" />;
   };
   
   return (
     <Routes>
-      {/* Route publik */}
-      <Route path="/" element={<Home />} />
-      <Route path="/albums" element={<Albums />} />
-      <Route path="/playlists" element={<Playlists />} />
-      <Route path="/playlists/:id" element={<PlaylistDetail />} />
-      {/* Route login admin */}
-      <Route path="/admin/login" element={<Login />} />
-      {/* Route dashboard admin yang dilindungi */}
+      {/* Public routes */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/callback" element={<Callback />} />
+      
+      {/* Protected routes */}
+      <Route 
+        path="/" 
+        element={
+          <RequireAuth>
+            <Home />
+          </RequireAuth>
+        } 
+      />
+      <Route 
+        path="/albums" 
+        element={
+          <RequireAuth>
+            <Albums />
+          </RequireAuth>
+        } 
+      />
+      <Route 
+        path="/playlists" 
+        element={
+          <RequireAuth>
+            <Playlists />
+          </RequireAuth>
+        } 
+      />
+      <Route 
+        path="/playlists/:id" 
+        element={
+          <RequireAuth>
+            <PlaylistDetail />
+          </RequireAuth>
+        } 
+      />
       <Route 
         path="/admin" 
         element={
@@ -45,16 +74,14 @@ const AppRoutes = () => {
 };
 
 const MainLayout = () => {
-  // State untuk cek apakah device mobile berdasar lebar window
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  // State untuk menyimpan query pencarian dari Header
   const [searchQuery, setSearchQuery] = useState('');
+  const { isAuthenticated } = useAuth();
   
-  // Cek apakah halaman saat ini adalah halaman login admin
-  const isLoginPage = window.location.pathname === '/admin/login';
+  const isLoginPage = window.location.pathname === '/login';
+  const isCallbackPage = window.location.pathname === '/callback';
   
   useEffect(() => {
-    // Handler untuk resize window, update isMobile
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };
@@ -63,45 +90,36 @@ const MainLayout = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
   
-  // Fungsi handle ketika search dari Header
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    // Bisa digunakan untuk filter data sesuai query
     console.log('Searching for:', query);
   };
   
-  // Jika halaman login, tidak tampilkan Sidebar dan Header,
-  // langsung render AppRoutes saja
-  if (isLoginPage) {
+  // Don't show layout for login and callback pages
+  if (isLoginPage || isCallbackPage || !isAuthenticated) {
     return <AppRoutes />;
   }
   
-  // Layout utama aplikasi
   return (
     <div className="flex h-screen overflow-hidden">
-      {/* Sidebar yang responsif berdasar isMobile */}
       <Sidebar isMobile={isMobile} />
       
       <main className="flex-1 overflow-y-auto pb-24">
-        {/* Header dengan search bar */}
         <Header onSearch={handleSearch} />
         
-        {/* AnimatePresence dari framer-motion untuk animasi pergantian halaman */}
         <AnimatePresence mode="wait">
           <motion.div
-            key={window.location.pathname} // kunci animasi berdasarkan path
+            key={window.location.pathname}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="min-h-[calc(100vh-64px)]" // tinggi minimal sesuai viewport - header
+            className="min-h-[calc(100vh-64px)]"
           >
-            {/* Semua route aplikasi */}
             <AppRoutes />
           </motion.div>
         </AnimatePresence>
         
-        {/* Komponen MusicPlayer selalu tampil di bawah konten */}
         <MusicPlayer />
       </main>
     </div>
@@ -110,13 +128,9 @@ const MainLayout = () => {
 
 function App() {
   return (
-    // Router pembungkus aplikasi
     <Router>
-      {/* Provider untuk auth */}
       <AuthProvider>
-        {/* Provider untuk player state */}
         <PlayerProvider>
-          {/* Layout utama */}
           <MainLayout />
         </PlayerProvider>
       </AuthProvider>
